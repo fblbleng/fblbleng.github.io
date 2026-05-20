@@ -3,14 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plasma cell differentiation — single-cell multi-omics case study | Fabiola</title>
+  <title>Plasma cell differentiation, single-cell multi-omics case study · Lumen · Fabiola Blengio</title>
   <meta name="description" content="End-to-end re-analysis of human plasma cell differentiation from BD Rhapsody scRNA-seq data (Moreaux et al., Blood 2024).">
   <link rel="stylesheet" href="../css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
-    /* Case study specific styles - extends the main style.css */
+    /* Logo styles for Lumen brand */
+    .logo-stack {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      text-decoration: none;
+    }
+    .logo-stack .brand {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .logo-stack .brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+
+    /* Case study specific styles */
     .case-hero {
       padding: 6rem 2rem 3rem;
       max-width: 900px;
@@ -205,7 +228,10 @@
 
   <nav>
     <div class="nav-inner">
-      <a href="../index.html" class="logo">Fabiola</a>
+      <a href="../index.html" class="logo-stack">
+        <span class="brand">Lumen</span>
+        <span class="brand-sub">Computational Biology</span>
+      </a>
       <div class="nav-links">
         <a href="../index.html#work">Work</a>
         <a href="../index.html#services">Services</a>
@@ -236,11 +262,11 @@
       </div>
       <div>
         <dt>Dataset</dt>
-        <dd>GSE242330 — 8,545 cells across 4 differentiation stages, 2 biological replicates</dd>
+        <dd>GSE242330. 8,545 cells across 4 differentiation stages, 2 biological replicates</dd>
       </div>
       <div>
         <dt>Stages captured</dt>
-        <dd>MBC → prePB → PB → PC</dd>
+        <dd>MBC, prePB, PB, PC</dd>
       </div>
       <div>
         <dt>Tooling</dt>
@@ -264,14 +290,14 @@
   </header>
 
   <!-- ============================================
-       SECTION 1 — THE QUESTION
+       SECTION 1, THE QUESTION
        ============================================ -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The question</p>
     <h2>How do B cells become antibody factories?</h2>
 
     <p>
-      Plasma cells are the body's antibody factories — terminally differentiated
+      Plasma cells are the body's antibody factories: terminally differentiated
       B cells that survive for decades in bone marrow niches and continuously secrete
       immunoglobulin. The path from memory B cell (MBC) to mature plasma cell (PC)
       passes through two proliferative intermediates: preplasmablasts (prePB) and
@@ -282,7 +308,7 @@
       Moreaux <em>et al.</em> generated a four-stage in vitro differentiation
       system and profiled it with BD Rhapsody single-cell RNA-seq. This case study
       re-analyzes their public data with an emphasis on the methodological choices
-      that shape what we see — particularly around cell cycle confounding, which
+      that shape what we see, particularly around cell cycle confounding, which
       is unusually strong in this dataset because prePB and PB are heavily
       proliferating populations.
     </p>
@@ -294,7 +320,7 @@
   </section>
 
   <!-- ============================================
-       SECTION 2 — DATASET & DESIGN
+       SECTION 2, DATASET & DESIGN
        ============================================ -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The data</p>
@@ -321,14 +347,14 @@
     <p>
       <strong>Sample tag demultiplexing.</strong> BD Rhapsody multiplexes multiple
       samples into one library using oligo barcodes. The per-cell mapping
-      (Cell_Index → Sample_Tag → Sample_Name) was joined onto the gene count
+      (Cell_Index to Sample_Tag to Sample_Name) was joined onto the gene count
       matrix to assign each cell to its differentiation stage. Multiplets and
       Undetermined cells (~2-3%) were filtered out.
     </p>
   </section>
 
   <!-- ============================================
-       SECTION 3 — METHODS
+       SECTION 3, METHODS
        ============================================ -->
   <section class="case-section" id="methods">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The approach</p>
@@ -357,31 +383,31 @@
     <p>
       Ig constant and variable region genes are so dominantly expressed in PB and
       PC that they drive clustering by antibody class rather than by regulatory
-      state. They're retained in the data — just not used to find the variable
+      state. They're retained in the data, just not used to find the variable
       features that define cell identity.
     </p>
 
-    <h3>Cell cycle regression — a methodological comparison</h3>
+    <h3>Cell cycle regression, a methodological comparison</h3>
     <p>
       With over 80% of preplasmablasts in S or G2/M phase, cell cycle is not a
-      nuisance variable — it's part of the biology. To make this choice explicit,
+      nuisance variable: it's part of the biology. To make this choice explicit,
       three regression strategies were compared on the same data:
     </p>
 
     <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
       <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
-        <strong style="color: var(--ink);">A. Full regression</strong>
-        — regresses S.Score and G2M.Score independently. Removes cell cycle entirely.
+        <strong style="color: var(--ink);">A. Full regression.</strong>
+        Regresses S.Score and G2M.Score independently. Removes cell cycle entirely.
         Matches the original publication.
       </li>
       <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
-        <strong style="color: var(--ink);">B. CC.Difference regression</strong>
-        — regresses S.Score minus G2M.Score. Removes within-cycle phase identity
+        <strong style="color: var(--ink);">B. CC.Difference regression.</strong>
+        Regresses S.Score minus G2M.Score. Removes within-cycle phase identity
         while preserving the cycling-versus-quiescent axis.
       </li>
       <li style="padding: 0.8rem 0;">
-        <strong style="color: var(--ink);">C. No regression</strong>
-        — retains all cell cycle signal as biology.
+        <strong style="color: var(--ink);">C. No regression.</strong>
+        Retains all cell cycle signal as biology.
       </li>
     </ul>
 
@@ -400,7 +426,7 @@
   </section>
 
   <!-- ============================================
-       SECTION 4 — RESULTS
+       SECTION 4, RESULTS
        ============================================ -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The results</p>
@@ -450,7 +476,7 @@
       <figcaption>
         <strong>Figure 5.</strong> Differential expression between the two
         PC-dominated clusters. C2 expresses the full IgG constant region panel
-        (IGHG1, IGHG2, IGHG3, IGHG4 — all at extreme log2FC) and represents
+        (IGHG1, IGHG2, IGHG3, IGHG4, all at extreme log2FC) and represents
         class-switched IgG-secreting plasma cells. C4 expresses IGHA1, IGHA2,
         IGHM, and IGJ (the joining chain required for polymeric IgA/IgM assembly)
         and represents IgA/IgM-secreting plasma cells.
@@ -459,7 +485,7 @@
 
     <div class="case-key-fact">
       Two PC clusters, one biological story: the classical immunoglobulin class switch
-      that separates IgG-secreting plasma cells from IgA/IgM-secreting plasma cells —
+      that separates IgG-secreting plasma cells from IgA/IgM-secreting plasma cells,
       recovered here without prior knowledge or supervised input.
     </div>
 
@@ -469,7 +495,7 @@
       <div class="finding">
         <h4>1. The trajectory is recovered cleanly</h4>
         <p>
-          The MBC → prePB → PB → PC differentiation axis emerges as the dominant
+          The MBC to prePB to PB to PC differentiation axis emerges as the dominant
           structure in the integrated UMAP, with cluster purity ≥78% against the
           experimental labels.
         </p>
@@ -478,14 +504,14 @@
         <h4>2. Sample tag demultiplexing was validated by biology</h4>
         <p>
           Immunoglobulin content rises monotonically across the assigned stages
-          (MBC 0% → PC 1.3% median %Ig), confirming the demultiplexing was correct
+          (MBC 0% to PC 1.3% median %Ig), confirming the demultiplexing was correct
           at the cell level.
         </p>
       </div>
       <div class="finding">
         <h4>3. PC heterogeneity follows the immunoglobulin class switch</h4>
         <p>
-          The two PC sub-clusters separate by isotype (IgG vs IgA/IgM) — a
+          The two PC sub-clusters separate by isotype (IgG vs IgA/IgM), a
           classical immunological feature recovered de novo from unsupervised
           clustering.
         </p>
@@ -498,11 +524,125 @@
           and shows the consequences.
         </p>
       </div>
+      <div class="finding">
+        <h4>5. The class-switching state is identifiable</h4>
+        <p>
+          Sub-clustering within proliferating cells revealed an AICDA-expressing
+          germinal-center-like population, providing a mechanistic link between
+          the proliferating compartment and the downstream IgG vs IgA/IgM plasma
+          cell split.
+        </p>
+      </div>
     </div>
   </section>
 
   <!-- ============================================
-       SECTION 5 — REPRODUCIBILITY
+       SECTION 4b, GOING DEEPER (SUBSET ANALYSIS)
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">Going deeper</p>
+    <h2>Sub-clustering reveals the class-switching decision point</h2>
+
+    <p>
+      The headline analysis identified two PC sub-populations separated by
+      immunoglobulin class (IgG vs IgA/IgM). But where, in the differentiation
+      trajectory, does that decision happen? To find out, the proliferating
+      cells (prePB + PB) were re-analyzed as a focused subset, without cell
+      cycle regression, at clustering resolution 0.2 (matching the paper's
+      Analysis 2 strategy). This isolated subset uses cell cycle as biological
+      signal rather than nuisance variation.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/10_subset_umap.png"
+           alt="Subset UMAP of proliferating prePB and PB cells showing five sub-clusters and cell cycle phase">
+      <figcaption>
+        <strong>Figure 6.</strong> Sub-analysis UMAP of the proliferating
+        compartment (prePB + PB, n = 4,850 cells). Five sub-clusters were
+        recovered at resolution 0.2. The cell cycle panel (bottom-right) shows
+        that phase varies along the UMAP structure rather than driving the
+        clustering itself, consistent with biology being the dominant axis
+        of variation.
+      </figcaption>
+    </figure>
+
+    <h3>Five sub-clusters, five biological states</h3>
+
+    <p>
+      Per-cluster marker analysis revealed that each sub-cluster corresponds
+      to a discrete state along the B-cell-to-plasma-cell trajectory.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/11_subset_biology_dotplot.png"
+           alt="Dot plot of biologically meaningful markers across the five sub-clusters">
+      <figcaption>
+        <strong>Figure 7.</strong> Sub-cluster identity revealed by marker
+        expression. Each cluster lights up a distinct molecular program: memory
+        activation (cluster 4), germinal-center-like class-switching machinery
+        (cluster 2), metabolic activation (cluster 0), and parallel commitment
+        to IgA (cluster 1) or IgG (cluster 3) fates.
+      </figcaption>
+    </figure>
+
+    <p>
+      Reading the dot plot left to right:
+    </p>
+
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Cluster 4 (memory-activated).</strong>
+        FCER2 (CD23), IL4R, CD84. Classical signatures of an IL-4-responsive,
+        memory-like B-cell state. The entry point into the differentiation
+        program.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Cluster 2 (germinal-center-like).</strong>
+        AICDA, CCL17, CCL22, CXCL10, AHR. AICDA (activation-induced cytidine
+        deaminase) is the enzyme responsible for class switch recombination
+        and somatic hypermutation. This is the cellular state in which the
+        antibody-class decision is actually being made.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Cluster 0 (metabolic activation).</strong>
+        HK2, POLR3G, EGR1, AK4. Glycolytic switch, RNA Pol III activity, and
+        proliferation-associated transcription. The largest cluster (1,778
+        cells), representing the proliferative engine of the program.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Cluster 1 (IgA-committing PB).</strong>
+        IGHA1, IGHA2, IGJ, CD38. Plasmablasts that have committed to the
+        IgA-secreting fate, expressing the J-chain required for polymeric IgA
+        assembly. The precursor to the IgA/IgM PC cluster from the headline
+        analysis.
+      </li>
+      <li style="padding: 0.8rem 0;">
+        <strong style="color: var(--ink);">Cluster 3 (IgG-committing PB).</strong>
+        IGHG1, IGHG2, IGHG3, IGHG4, XBP1. Plasmablasts on the IgG trajectory,
+        with XBP1 marking activation of the unfolded protein response in
+        preparation for high-volume antibody secretion. The precursor to the
+        IgG PC cluster from the headline analysis.
+      </li>
+    </ul>
+
+    <div class="case-key-fact">
+      AICDA expression localizes to a discrete sub-cluster, identifying the
+      cellular state where class-switch recombination occurs and providing a
+      mechanistic link between the proliferating compartment and the
+      IgG vs IgA/IgM split observed downstream in mature plasma cells.
+    </div>
+
+    <p>
+      This finding adds substance to the headline result. The two PC clusters
+      separated by isotype (C2 IgG, C4 IgA/IgM) are not arbitrary endpoints:
+      they trace back to a discrete decision-making sub-population within the
+      proliferating compartment, marked by AICDA expression. The original
+      publication did not separately characterize this sub-cluster structure.
+    </p>
+  </section>
+
+  <!-- ============================================
+       SECTION 5, REPRODUCIBILITY
        ============================================ -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The code</p>
@@ -524,7 +664,7 @@
   </section>
 
   <!-- ============================================
-       SECTION 6 — WHAT THIS DEMONSTRATES
+       SECTION 6, WHAT THIS DEMONSTRATES
        ============================================ -->
   <section class="case-section" style="background: var(--bg-alt); max-width: none; padding: 4rem 2rem;">
     <div style="max-width: 900px; margin: 0 auto;">
@@ -540,10 +680,10 @@
         <li>✓ Multi-replicate batch integration</li>
         <li>✓ Unsupervised clustering + annotation</li>
         <li>✓ Differential expression analysis</li>
+        <li>✓ Sub-cluster biological interpretation</li>
         <li>✓ Publication-quality figure design</li>
         <li>✓ Reproducible pipeline engineering</li>
         <li>✓ Methodological transparency</li>
-        <li>✓ Biological interpretation</li>
       </ul>
 
       <p style="margin-top: 2rem;">
@@ -555,7 +695,7 @@
 
   <footer>
     <div class="container">
-      <p>© 2026 Fabiola. Built with care in RStudio.</p>
+      <p>© 2026 Lumen · Fabiola Blengio. Built with care in RStudio.</p>
     </div>
   </footer>
 
