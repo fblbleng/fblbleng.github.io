@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plasma cell differentiation — single-cell multi-omics case study | Fabiola</title>
+  <meta name="description" content="End-to-end re-analysis of human plasma cell differentiation from BD Rhapsody scRNA-seq data (Moreaux et al., Blood 2024).">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* Case study specific styles - extends the main style.css */
+    .case-hero {
+      padding: 6rem 2rem 3rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .case-hero .breadcrumb {
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+    }
+    .case-hero .breadcrumb a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .case-hero .breadcrumb a:hover { border-bottom: 1px solid var(--accent); }
+
+    .case-section {
+      padding: 3rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .case-section h2 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      letter-spacing: -0.01em;
+    }
+
+    .case-section h3 {
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-top: 2.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .case-section p {
+      font-size: 1.05rem;
+      line-height: 1.75;
+      color: var(--ink-soft);
+      margin-bottom: 1.2rem;
+    }
+
+    .case-section em {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 1.1em;
+      color: var(--ink);
+    }
+
+    .case-figure {
+      margin: 2.5rem 0;
+      padding: 1.5rem;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(42, 38, 34, 0.04);
+    }
+
+    .case-figure img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 2px;
+    }
+
+    .case-figure figcaption {
+      margin-top: 1rem;
+      font-size: 0.92rem;
+      color: var(--ink-mute);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    .case-figure figcaption strong {
+      font-style: normal;
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .case-key-fact {
+      padding: 1.5rem 2rem;
+      background: var(--bg-alt);
+      border-left: 3px solid var(--accent);
+      margin: 2rem 0;
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: var(--ink);
+      font-style: italic;
+    }
+
+    .meta-box {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--bg-alt);
+      border-radius: 4px;
+    }
+
+    .meta-box dt {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.4rem;
+    }
+
+    .meta-box dd {
+      font-size: 1rem;
+      color: var(--ink);
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .stack-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .stack-list span {
+      padding: 0.35rem 0.85rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 2px;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .case-cta {
+      display: inline-block;
+      padding: 0.9rem 1.8rem;
+      background: var(--ink);
+      color: var(--bg);
+      text-decoration: none;
+      border-radius: 2px;
+      font-weight: 500;
+      margin-right: 0.5rem;
+      transition: background 0.2s;
+    }
+    .case-cta:hover { background: var(--accent); }
+
+    .case-cta.secondary {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--ink);
+    }
+    .case-cta.secondary:hover {
+      background: var(--ink);
+      color: var(--bg);
+    }
+
+    .findings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      margin: 2rem 0;
+    }
+
+    .finding {
+      padding: 1.5rem;
+      border-top: 2px solid var(--accent-soft);
+    }
+
+    .finding h4 {
+      font-family: var(--serif);
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+
+    .finding p {
+      font-size: 1rem;
+      color: var(--ink-soft);
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="logo">Fabiola</a>
+      <div class="nav-links">
+        <a href="../index.html#work">Work</a>
+        <a href="../index.html#services">Services</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#contact">Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ============================================
+       HERO
+       ============================================ -->
+  <header class="case-hero">
+    <p class="breadcrumb"><a href="../index.html">Home</a> / Case studies / Plasma cell multi-omics</p>
+    <h1>Reading the language of plasma cells.</h1>
+    <p class="lede">
+      An end-to-end re-analysis of human plasma cell differentiation from BD Rhapsody
+      single-cell RNA-seq, integrating sample tag demultiplexing, stage-aware quality
+      control, a methodological comparison of cell cycle regression strategies, and
+      biological characterization of plasma cell sub-populations. Built on the
+      publicly available dataset from Moreaux et al. (<em>Blood</em>, 2024).
+    </p>
+
+    <dl class="meta-box">
+      <div>
+        <dt>Platform</dt>
+        <dd>BD Rhapsody WTA + sample tag multiplexing</dd>
+      </div>
+      <div>
+        <dt>Dataset</dt>
+        <dd>GSE242330 — 8,545 cells across 4 differentiation stages, 2 biological replicates</dd>
+      </div>
+      <div>
+        <dt>Stages captured</dt>
+        <dd>MBC → prePB → PB → PC</dd>
+      </div>
+      <div>
+        <dt>Tooling</dt>
+        <dd>Seurat v5, Harmony, ggplot2, pheatmap</dd>
+      </div>
+    </dl>
+
+    <div class="stack-list">
+      <span>scRNA-seq</span>
+      <span>BD Rhapsody</span>
+      <span>Sample tag demultiplexing</span>
+      <span>Harmony integration</span>
+      <span>Cell cycle modeling</span>
+      <span>Differential expression</span>
+      <span>R / Seurat v5</span>
+    </div>
+
+    <a href="https://github.com/fblbleng/plasma-cell-multiome-case-study"
+       class="case-cta" target="_blank" rel="noopener">View code on GitHub →</a>
+    <a href="#methods" class="case-cta secondary">Jump to methods</a>
+  </header>
+
+  <!-- ============================================
+       SECTION 1 — THE QUESTION
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The question</p>
+    <h2>How do B cells become antibody factories?</h2>
+
+    <p>
+      Plasma cells are the body's antibody factories — terminally differentiated
+      B cells that survive for decades in bone marrow niches and continuously secrete
+      immunoglobulin. The path from memory B cell (MBC) to mature plasma cell (PC)
+      passes through two proliferative intermediates: preplasmablasts (prePB) and
+      plasmablasts (PB).
+    </p>
+
+    <p>
+      Moreaux <em>et al.</em> generated a four-stage in vitro differentiation
+      system and profiled it with BD Rhapsody single-cell RNA-seq. This case study
+      re-analyzes their public data with an emphasis on the methodological choices
+      that shape what we see — particularly around cell cycle confounding, which
+      is unusually strong in this dataset because prePB and PB are heavily
+      proliferating populations.
+    </p>
+
+    <div class="case-key-fact">
+      82% of preplasmablasts and 53% of plasmablasts are in S or G2/M phase.
+      How you handle cell cycle determines what biology you can see.
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 2 — DATASET & DESIGN
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The data</p>
+    <h2>Experimental design</h2>
+
+    <p>
+      Two biological replicates were sequenced with BD Rhapsody using the Single-Cell
+      Multiplex Kit. Four sample tags per replicate (eight in total) labeled cells
+      from each differentiation stage. After QC, 7,920 cells were retained for
+      downstream analysis (92.7% retention).
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/01_cells_per_stage.png"
+           alt="Bar chart showing cells recovered per differentiation stage and replicate">
+      <figcaption>
+        <strong>Figure 1.</strong> Cells recovered per differentiation stage after
+        sample tag demultiplexing and QC. The four stages of in vitro plasma cell
+        differentiation are represented in both biological replicates, with prePB
+        (the most proliferative stage) most abundantly captured.
+      </figcaption>
+    </figure>
+
+    <p>
+      <strong>Sample tag demultiplexing.</strong> BD Rhapsody multiplexes multiple
+      samples into one library using oligo barcodes. The per-cell mapping
+      (Cell_Index → Sample_Tag → Sample_Name) was joined onto the gene count
+      matrix to assign each cell to its differentiation stage. Multiplets and
+      Undetermined cells (~2-3%) were filtered out.
+    </p>
+  </section>
+
+  <!-- ============================================
+       SECTION 3 — METHODS
+       ============================================ -->
+  <section class="case-section" id="methods">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The approach</p>
+    <h2>Methodological choices that matter</h2>
+
+    <h3>Stage-aware quality control</h3>
+    <p>
+      Plasma cells have radically different transcriptional profiles than memory B
+      cells: median UMI counts vary by 10× across stages, mitochondrial content
+      varies by 4×, and naturally high %mt in plasmablasts (reflecting their
+      metabolic demand) would be misclassified as poor quality under standard
+      thresholds. <em>Stage-aware percentile thresholds</em> (95th percentile
+      within each stage for %mt, 1st/99th for nFeature and nCount) preserve
+      biological variation while removing technical outliers.
+    </p>
+
+    <h3>LogNormalize over SCTransform</h3>
+    <p>
+      With UMI counts ranging from ~4,000 in MBC to ~50,000 in prePB, the shared
+      mean-variance assumption underlying SCTransform's GLM doesn't hold across
+      this dynamic range. LogNormalize treats each cell independently and is more
+      honest about the heterogeneity.
+    </p>
+
+    <h3>Immunoglobulin genes excluded from variable features</h3>
+    <p>
+      Ig constant and variable region genes are so dominantly expressed in PB and
+      PC that they drive clustering by antibody class rather than by regulatory
+      state. They're retained in the data — just not used to find the variable
+      features that define cell identity.
+    </p>
+
+    <h3>Cell cycle regression — a methodological comparison</h3>
+    <p>
+      With over 80% of preplasmablasts in S or G2/M phase, cell cycle is not a
+      nuisance variable — it's part of the biology. To make this choice explicit,
+      three regression strategies were compared on the same data:
+    </p>
+
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">A. Full regression</strong>
+        — regresses S.Score and G2M.Score independently. Removes cell cycle entirely.
+        Matches the original publication.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">B. CC.Difference regression</strong>
+        — regresses S.Score minus G2M.Score. Removes within-cycle phase identity
+        while preserving the cycling-versus-quiescent axis.
+      </li>
+      <li style="padding: 0.8rem 0;">
+        <strong style="color: var(--ink);">C. No regression</strong>
+        — retains all cell cycle signal as biology.
+      </li>
+    </ul>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/08_methods_comparison.png"
+           alt="Side-by-side UMAP comparison of three cell cycle regression strategies">
+      <figcaption>
+        <strong>Figure 2.</strong> Three regression strategies, same upstream data.
+        Top row: colored by experimental stage. Bottom row: colored by cell cycle
+        phase. Approach B (CC.Difference) was selected for the headline trajectory
+        because it produces the cleanest differentiation gradient while removing
+        phase-driven sub-clustering. The comparison itself demonstrates how
+        methodological choices shape the embedding.
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- ============================================
+       SECTION 4 — RESULTS
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The results</p>
+    <h2>What the data tells us</h2>
+
+    <h3>Six unbiased clusters recapitulate the four-stage trajectory</h3>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/13_annotated_umap.png"
+           alt="Annotated headline UMAP showing the four differentiation stages and six unbiased clusters">
+      <figcaption>
+        <strong>Figure 3.</strong> Integrated UMAP after Harmony batch correction
+        (left: by experimental stage; right: annotated clusters at resolution 0.5).
+        Six unbiased Louvain clusters map cleanly onto the four labeled
+        differentiation stages, with each stage assigned to a dominant cluster
+        (≥78% purity). MBC, prePB, and PB each form one principal cluster; PCs
+        split into two sub-populations.
+      </figcaption>
+    </figure>
+
+    <h3>Cluster identity from canonical markers</h3>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/16_top_marker_heatmap.png"
+           alt="Heatmap of top 5 marker genes per cluster across all clusters">
+      <figcaption>
+        <strong>Figure 4.</strong> Top 5 differentially expressed genes per cluster,
+        scaled average expression. Each cluster shows a distinct marker signature:
+        MBC clusters express resting B-cell markers (FOXP1, CD83, CD69, KLF6);
+        prePB and PB express activation/proliferation markers (CDCA7, MYB, TPRG1,
+        ZBED2); and the two PC clusters separate cleanly by immunoglobulin class
+        (top vs bottom of the PC blocks).
+      </figcaption>
+    </figure>
+
+    <h3>The PC sub-populations reveal classical isotype biology</h3>
+
+    <p>
+      Unbiased clustering recovered two PC-dominated sub-populations that the
+      original publication did not separately characterize. Direct comparison
+      between them reveals a textbook immunoglobulin class switch:
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/17_PCcluster_volcano.png"
+           alt="Volcano plot of differential expression between the two PC clusters showing IgG vs IgA/IgM split">
+      <figcaption>
+        <strong>Figure 5.</strong> Differential expression between the two
+        PC-dominated clusters. C2 expresses the full IgG constant region panel
+        (IGHG1, IGHG2, IGHG3, IGHG4 — all at extreme log2FC) and represents
+        class-switched IgG-secreting plasma cells. C4 expresses IGHA1, IGHA2,
+        IGHM, and IGJ (the joining chain required for polymeric IgA/IgM assembly)
+        and represents IgA/IgM-secreting plasma cells.
+      </figcaption>
+    </figure>
+
+    <div class="case-key-fact">
+      Two PC clusters, one biological story: the classical immunoglobulin class switch
+      that separates IgG-secreting plasma cells from IgA/IgM-secreting plasma cells —
+      recovered here without prior knowledge or supervised input.
+    </div>
+
+    <h3>Findings summary</h3>
+
+    <div class="findings-grid">
+      <div class="finding">
+        <h4>1. The trajectory is recovered cleanly</h4>
+        <p>
+          The MBC → prePB → PB → PC differentiation axis emerges as the dominant
+          structure in the integrated UMAP, with cluster purity ≥78% against the
+          experimental labels.
+        </p>
+      </div>
+      <div class="finding">
+        <h4>2. Sample tag demultiplexing was validated by biology</h4>
+        <p>
+          Immunoglobulin content rises monotonically across the assigned stages
+          (MBC 0% → PC 1.3% median %Ig), confirming the demultiplexing was correct
+          at the cell level.
+        </p>
+      </div>
+      <div class="finding">
+        <h4>3. PC heterogeneity follows the immunoglobulin class switch</h4>
+        <p>
+          The two PC sub-clusters separate by isotype (IgG vs IgA/IgM) — a
+          classical immunological feature recovered de novo from unsupervised
+          clustering.
+        </p>
+      </div>
+      <div class="finding">
+        <h4>4. Methods matter, transparently</h4>
+        <p>
+          Three cell cycle regression strategies produce three meaningfully
+          different views of the same data. The case study documents each choice
+          and shows the consequences.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 5 — REPRODUCIBILITY
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The code</p>
+    <h2>Fully reproducible</h2>
+
+    <p>
+      The complete analysis lives in a public GitHub repository. Every figure on
+      this page can be regenerated from the public data by running the scripts in
+      order. Each script is self-contained, parameterized, and documented with
+      methods notes explaining the choices made.
+    </p>
+
+    <p style="margin-top: 1.5rem;">
+      <a href="https://github.com/fblbleng/plasma-cell-multiome-case-study"
+         class="case-cta" target="_blank" rel="noopener">
+        Browse the code on GitHub →
+      </a>
+    </p>
+  </section>
+
+  <!-- ============================================
+       SECTION 6 — WHAT THIS DEMONSTRATES
+       ============================================ -->
+  <section class="case-section" style="background: var(--bg-alt); max-width: none; padding: 4rem 2rem;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">What this demonstrates</p>
+      <h2>Skills shown in this case study</h2>
+
+      <ul style="list-style: none; padding-left: 0; columns: 2; column-gap: 3rem; line-height: 2;">
+        <li>✓ BD Rhapsody platform expertise</li>
+        <li>✓ Sample tag demultiplexing</li>
+        <li>✓ Stage-aware QC design</li>
+        <li>✓ Seurat v5 + Harmony pipelines</li>
+        <li>✓ Cell cycle modeling decisions</li>
+        <li>✓ Multi-replicate batch integration</li>
+        <li>✓ Unsupervised clustering + annotation</li>
+        <li>✓ Differential expression analysis</li>
+        <li>✓ Publication-quality figure design</li>
+        <li>✓ Reproducible pipeline engineering</li>
+        <li>✓ Methodological transparency</li>
+        <li>✓ Biological interpretation</li>
+      </ul>
+
+      <p style="margin-top: 2rem;">
+        Have a dataset you'd like analyzed with this level of care?
+        <a href="../index.html#contact" style="color: var(--accent); border-bottom: 1px solid var(--accent-soft);">Get in touch</a>.
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Fabiola. Built with care in RStudio.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
