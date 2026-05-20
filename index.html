@@ -3,18 +3,44 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fabiola — Computational Biologist & Author</title>
-  <meta name="description" content="Single-cell and multi-omics bioinformatics consulting. Plasma cell biology, gene regulatory networks, and reproducible pipelines.">
+  <title>Lumen · Computational Biology · Fabiola Blengio</title>
+  <meta name="description" content="Lumen is a single-cell and multi-omics computational biology consultancy. Plasma cell biology, gene regulatory networks, and reproducible pipelines. Founded by Fabiola Blengio.">
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    .logo-stack {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+      text-decoration: none;
+    }
+    .logo-stack .brand {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 500;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+    .logo-stack .brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+  </style>
 </head>
 <body>
 
   <nav>
     <div class="nav-inner">
-      <a href="index.html" class="logo">Fabiola</a>
+      <a href="index.html" class="logo-stack">
+        <span class="brand">Lumen</span>
+        <span class="brand-sub">Computational Biology</span>
+      </a>
       <div class="nav-links">
         <a href="#work">Work</a>
         <a href="#services">Services</a>
@@ -26,12 +52,14 @@
 
   <header class="hero">
     <div class="hero-inner">
-      <p class="eyebrow">Computational biologist · Author · Late bloomer</p>
-      <h1>I help research teams<br>read the language of cells.</h1>
+      <p class="eyebrow">Lumen · Computational Biology</p>
+      <h1>Reading the language<br>of cells.</h1>
       <p class="lede">
-        Single-cell and multi-omics bioinformatics consulting — from raw sequencing data 
-        to the regulatory networks that shape cell identity. I work with academic labs, 
-        biotech, and pharma on scRNA-seq, scATAC-seq, multiome, and immune repertoire analysis.
+        Lumen is a single-cell and multi-omics computational biology consultancy
+        founded by Fabiola Blengio. I help research teams move from raw sequencing
+        data to the regulatory networks that shape cell identity, working with
+        academic labs, biotech, and pharma on scRNA-seq, scATAC-seq, multiome,
+        and immune repertoire analysis.
       </p>
       <div class="cta-row">
         <a href="#work" class="btn-primary">See my work</a>
@@ -45,9 +73,11 @@
       <p class="section-label">Featured case study</p>
       <h2>Plasma cell multi-omics workflow</h2>
       <p class="section-lede">
-        An end-to-end single-cell pipeline investigating why long-lived plasma cells 
-        persist in bone marrow but not in spleen — integrating scRNA-seq, scATAC-seq, 
-        BCR repertoire, and gene regulatory network inference.
+        An end-to-end single-cell pipeline investigating human plasma cell
+        differentiation, integrating BD Rhapsody scRNA-seq, sample tag
+        demultiplexing, stage-aware quality control, and a methodological
+        comparison of cell cycle regression strategies. Re-analysis of
+        Moreaux et al., <em>Blood</em> 2024.
       </p>
 
       <figure class="figure-feature">
@@ -58,15 +88,15 @@
       <div class="case-highlights">
         <div class="highlight">
           <h3>Data &amp; scale</h3>
-          <p>Parallel scRNA-seq, scATAC-seq, and long-read BCR V(D)J from BD Rhapsody, complemented by paired single-nucleus multiome (snRNA + snATAC). Bone marrow vs. spleen comparison.</p>
+          <p>BD Rhapsody scRNA-seq across four differentiation stages (MBC, prePB, PB, PC) in two biological replicates. 8,545 cells captured; 7,920 retained after stage-aware quality control.</p>
         </div>
         <div class="highlight">
           <h3>Approach</h3>
-          <p>Seurat v5 + Signac with Harmony integration; SCENIC+ gene regulatory networks; hdWGCNA co-expression; lncRNA regulatory layer combining GENCODE v44, RIblast, and NPInter validation.</p>
+          <p>Seurat v5 with LogNormalize, Harmony batch integration, and a three-way comparison of cell cycle regression strategies. Immunoglobulin genes excluded from variable features to reveal underlying regulatory programs.</p>
         </div>
         <div class="highlight">
-          <h3>Key findings</h3>
-          <p>Identified a BM-specific AP-1/KLF regulatory axis, MIR155HG as a niche-specific lncRNA hub, and a triple-validated NEAT1→MSI2 interaction supporting plasma cell longevity.</p>
+          <h3>Key finding</h3>
+          <p>Unsupervised clustering recovered two PC sub-populations that segregate cleanly by immunoglobulin class (IgG-secreting and IgA/IgM-secreting plasma cells), without using Ig genes as clustering features.</p>
         </div>
       </div>
 
@@ -110,22 +140,24 @@
   <section id="about" class="section">
     <div class="container narrow">
       <p class="section-label">About</p>
-      <h2>Two lives, one thread</h2>
+      <h2>Who I am</h2>
       <p class="prose">
-        I'm a computational biologist with deep expertise in single-cell and multi-omics genomics, 
-        focused on the gene regulatory programs that shape immune cell identity. My current work 
-        integrates scRNA-seq, snATAC-seq, and lncRNA regulatory analysis to understand why 
+        I'm Fabiola Blengio, a computational biologist with deep expertise in
+        single-cell and multi-omics genomics, focused on the gene regulatory
+        programs that shape immune cell identity. My current work integrates
+        scRNA-seq, snATAC-seq, and lncRNA regulatory analysis to understand why
         long-lived plasma cells survive in some tissue niches but not others.
       </p>
       <p class="prose">
-        I'm also a writer. My debut novella, <em>The Star That Waited</em>, explores late blooming, 
-        love, and motherhood later in life — themes that aren't unrelated to my science. Both 
-        pursuits ask the same question in different languages: <em>why do some things flourish in 
-        one context and not another?</em>
+        The name <em>Lumen</em> comes from the biology itself. A lumen is the
+        space enclosed by coordinated, polarized cells, where organ function
+        emerges. Function in biology is not stored in single cells; it emerges
+        from how cells organize. That's what I help research teams see in their
+        data.
       </p>
       <p class="prose">
-        I believe in reproducible work, clear communication, and the quiet conviction that 
-        it's never too late to become who you were meant to be.
+        I believe in reproducible work, clear communication, and the quiet
+        conviction that it's never too late to become who you were meant to be.
       </p>
     </div>
   </section>
@@ -135,23 +167,23 @@
       <p class="section-label">Get in touch</p>
       <h2>Let's talk about your data</h2>
       <p class="prose">
-        Whether you have a specific analysis you need help with, an exploratory project that needs 
-        a computational partner, or you're just curious about what's possible with your dataset — 
-        I'd love to hear from you.
+        Whether you have a specific analysis you need help with, an exploratory
+        project that needs a computational partner, or you're just curious
+        about what's possible with your dataset, I'd love to hear from you.
       </p>
       <p class="contact-line">
-        <a href="mailto:your.email@example.com">your.email@example.com</a>
+         <a href="mailto:fabiolablengio@yahoo.it">fabiolablengio@yahoo.it</a>
       </p>
       <p class="contact-secondary">
-        <a href="https://www.linkedin.com/in/yourprofile">LinkedIn</a> · 
-        <a href="https://github.com/yourusername">GitHub</a>
+        <a href="https://www.linkedin.com/in/fabiola-undefined-044a91369/">LinkedIn</a> ·
+        <a href="https://github.com/fblbleng">GitHub</a>
       </p>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <p>© 2026 Fabiola. Built with care in RStudio.</p>
+      <p>© 2026 Lumen · Fabiola Blengio. Built with care in RStudio.</p>
     </div>
   </footer>
 
