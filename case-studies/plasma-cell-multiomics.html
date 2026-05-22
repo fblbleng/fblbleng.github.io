@@ -746,7 +746,186 @@
       protein-coding partners.
     </p>
   </section>
+<!-- ============================================
+       SECTION 4d, hdWGCNA CO-EXPRESSION NETWORKS (Phase 2.2)
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">Integrating the layers</p>
+    <h2>Co-expression networks reveal regulatory modules</h2>
 
+    <p>
+      Individual gene-by-gene analysis tells us which genes change between stages,
+      but biology is rarely governed by isolated genes. Regulatory programs operate
+      as <em>modules</em> of co-expressed genes acting together. To make this
+      structure explicit, the protein-coding and lncRNA layers were integrated using
+      <em>hdWGCNA</em> (high-dimensional weighted gene co-expression network
+      analysis), which builds metacells from the integrated data and identifies
+      modules of genes whose expression covaries across the trajectory.
+    </p>
+
+    <h3>Network construction</h3>
+
+    <p>
+      The gene panel for the network combined the 3,000 variable features with the
+      3,208 detected lncRNAs (after excluding immunoglobulin and TR receptor genes),
+      yielding 5,521 genes for network construction. Cells were aggregated into
+      stage-homogeneous metacells (k=25 neighbors, max_shared=10) using the Harmony
+      embedding, reducing 7,920 cells into a more reliable expression matrix for
+      network analysis.
+    </p>
+
+    <p>
+      Soft-thresholding power (β) was selected by scanning powers from 1 to 30 and
+      identifying the smallest value at which the network reaches scale-free
+      topology (R² > 0.8). The diagnostic identified <strong>β = 4</strong> as the
+      optimal value, with healthy mean connectivity (~400) at that power.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/23_softthreshold_diagnostic.png"
+           alt="Four-panel diagnostic plot for soft-thresholding power selection">
+      <figcaption>
+        <strong>Figure 11.</strong> Soft-thresholding diagnostic across powers 1-30.
+        Top-left: scale-free topology R² crosses 0.8 at β = 4 (selected). Top-right:
+        mean connectivity at β = 4 is approximately 400, in the healthy range for
+        biologically interpretable modules. The strong biological signal in this
+        dataset allows a relatively low β to reach scale-free topology.
+      </figcaption>
+    </figure>
+
+    <h3>Four modules emerge from the network</h3>
+
+    <p>
+      Network construction with β = 4 identified <strong>four major co-expression
+      modules</strong> (plus a "grey" unassigned category for genes without strong
+      co-expression patterns). Each module shows a distinct biological signature
+      based on its top hub genes.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/27_kME_per_module.png"
+           alt="kME distribution per module with top hub gene labels">
+      <figcaption>
+        <strong>Figure 12.</strong> kME distribution per module with the top 10 hub
+        genes labeled. The kME value measures how strongly each gene correlates with
+        its module's eigengene. Steep curves indicate tight modules with clearly
+        defined hubs; the labeled hub genes are the biological drivers of each
+        module.
+      </figcaption>
+    </figure>
+
+    <p>The four modules and their biological identity:</p>
+
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <span style="display: inline-block; width: 0.85em; height: 0.85em; border-radius: 2px; margin-right: 0.4em; vertical-align: -0.05em; background: #964b00;"></span>
+        <strong style="color: var(--ink);">Brown module (143 genes, 28% lncRNAs)</strong>
+        — <em>Memory B-cell program.</em> Top hubs: MS4A1 (CD20), KLF6, LAPTM5,
+        LTB, ZFP36L1, CD69, CD83, NFKBIA, HLA-DMB. Maps onto the MBC clusters of
+        the trajectory.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <span style="display: inline-block; width: 0.85em; height: 0.85em; border-radius: 2px; margin-right: 0.4em; vertical-align: -0.05em; background: #e8b800;"></span>
+        <strong style="color: var(--ink);">Yellow module (53 genes, 3 lncRNAs)</strong>
+        — <em>Activation and class-switching program.</em> Top hubs: SPIB, BATF3,
+        PEA15, CCL22, <strong>MIR155HG</strong>, LTA, CCR7, DEK, TRAF1, CCL17.
+        This module formally links MIR155HG (identified as a stage-specific lncRNA
+        in the differential expression analysis) to BATF3 (the AP-1 family
+        transcription factor essential for class switching) within a single
+        regulatory module.
+      </li>
+      <li style="padding: 0.8rem 0; border-bottom: 1px solid var(--border);">
+        <span style="display: inline-block; width: 0.85em; height: 0.85em; border-radius: 2px; margin-right: 0.4em; vertical-align: -0.05em; background: #4cb5b0;"></span>
+        <strong style="color: var(--ink);">Turquoise module (484 genes, 12% lncRNAs)</strong>
+        — <em>Proliferation and metabolic activation.</em> Top hubs: ACTG1, TUBA1B,
+        TYMS, DUT, LDHA, ENO1, TUBB, RAN, HSPD1. Combines DNA-synthesis machinery,
+        glycolytic metabolism, and cytoskeleton genes characteristic of the
+        proliferating prePB/PB compartment.
+      </li>
+      <li style="padding: 0.8rem 0;">
+        <span style="display: inline-block; width: 0.85em; height: 0.85em; border-radius: 2px; margin-right: 0.4em; vertical-align: -0.05em; background: #4472c4;"></span>
+        <strong style="color: var(--ink);">Blue module (172 genes, 61% lncRNAs)</strong>
+        — <em>IgG plasma cells with type-I interferon response.</em> Top hubs:
+        IFI6, MX1, ISG15, XAF1, IGJ, IFIT1, IFIT3, IFI44L, plus IGHG1 and IGHG2 as
+        connected members. This module integrates the IgG isotype with a
+        classical type I IFN signature, mapping cleanly onto the C2 IgG-PC cluster
+        from the headline analysis.
+      </li>
+    </ul>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/26_module_eigengenes_umap.png"
+           alt="Module eigengene activity overlaid on the headline UMAP">
+      <figcaption>
+        <strong>Figure 13.</strong> Each module's eigengene activity projected onto
+        the headline UMAP. Brown peaks in MBC, yellow in the prePB activation state,
+        turquoise across the proliferating compartment, and blue in the IgG-PC
+        cluster. The spatial pattern of each module recapitulates the
+        differentiation trajectory.
+      </figcaption>
+    </figure>
+
+    <h3>The unified hub-gene network</h3>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/28c_hubnet_clean.png"
+           alt="Unified force-directed network of top hub genes from all four modules">
+      <figcaption>
+        <strong>Figure 14.</strong> Force-directed network of the top hub genes
+        from all four modules. Three modules (brown memory, yellow activation,
+        turquoise proliferation) cluster together as the "active phase" of B-cell
+        differentiation, while the blue module (terminal IgG-PC + IFN response) sits
+        as a biologically distant cluster. The spatial separation reflects the
+        regulatory distance between actively differentiating cells and terminally
+        differentiated plasma cells.
+      </figcaption>
+    </figure>
+
+    <div class="case-key-fact">
+      MIR155HG appears as a hub gene in the yellow class-switching module alongside
+      BATF3, SPIB, and CCL17. This formally validates the lncRNA layer finding that
+      MIR155HG marks the class-switching decision point, embedding it within a
+      regulatory module that includes the transcription factors driving class
+      switch recombination.
+    </div>
+
+    <h3>What the network analysis adds</h3>
+
+    <p>
+      The co-expression network analysis adds three things that the gene-by-gene
+      analyses could not:
+    </p>
+
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 1.5rem;">
+      <li style="padding: 0.6rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Module-level regulatory units.</strong>
+        Instead of treating AICDA, BATF3, and MIR155HG as independent observations,
+        we now have a defined yellow module that captures the class-switching program
+        as a coherent regulatory unit with named hubs.
+      </li>
+      <li style="padding: 0.6rem 0; border-bottom: 1px solid var(--border);">
+        <strong style="color: var(--ink);">Formal lncRNA-protein integration.</strong>
+        MIR155HG sits in the same module as BATF3 and SPIB; PC-marker lncRNAs sit in
+        the same module as the IGHG genes and ISGs. These co-membership relationships
+        are testable hypotheses about co-regulation.
+      </li>
+      <li style="padding: 0.6rem 0;">
+        <strong style="color: var(--ink);">A summary view across all genes.</strong>
+        The four modules summarize the biology of 5,521 genes into four interpretable
+        regulatory programs (plus 4,669 genes that did not show strong co-expression,
+        mostly lowly-expressed lncRNAs that lack the power for network inference at
+        single-cell resolution).
+      </li>
+    </ul>
+
+    <p>
+      Next steps planned for this analysis include TF-target inference with SCENIC
+      to formally distinguish regulators from regulated genes within each module,
+      and integration of the scATAC-seq data (also available from the same study)
+      to add a chromatin-accessibility layer to the regulatory networks.
+    </p>
+  </section>
+  
   <!-- SECTION 5, REPRODUCIBILITY -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The code</p>
@@ -785,6 +964,9 @@
         <li>✓ Sub-cluster biological interpretation</li>
         <li>✓ GENCODE annotation + lncRNA panels</li>
         <li>✓ Non-coding RNA biology integration</li>
+        <li>✓ hdWGCNA co-expression networks</li>
+        <li>✓ Hub gene identification</li>
+        <li>✓ lncRNA-protein co-expression analysis</li>
         <li>✓ Publication-quality figure design</li>
         <li>✓ Reproducible pipeline engineering</li>
         <li>✓ Methodological transparency</li>
