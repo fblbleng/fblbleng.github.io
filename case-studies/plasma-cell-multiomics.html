@@ -1130,6 +1130,115 @@
       module they regulate. Two independent molecular layers converge on the same
       regulatory programs.
     </div>
+  </section>
+
+  <!-- ============================================
+       SECTION 4f, PEAK-TO-GENE LINKAGE (Phase 3.5)
+       ============================================ -->
+  <section class="case-section">
+    <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">From regions to genes</p>
+    <h2>Linking open chromatin to its target genes</h2>
+
+    <p>
+      Identifying which transcription factors are active is one half of the regulatory
+      picture. The other half is knowing <em>which genes</em> those factors regulate.
+      Each accessible peak was therefore linked to nearby genes by proximity to the
+      transcription start site (TSS), then cross-referenced against the RNA layers:
+      the hdWGCNA modules and the motif content of each peak.
+    </p>
+
+    <p>
+      Proximity rather than correlation was the honest choice here. Per-cell
+      correlation of accessibility with expression requires a multiome assay where the
+      same cells are measured in both modalities. The ATAC and RNA datasets here come
+      from separate cell populations (GSE242324 and GSE242330), so proximity identifies
+      candidate target genes, and the cross-referencing against motif and module
+      evidence supplies the support.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/42_peak_gene_distance_distribution.png"
+           alt="Histogram of peak-to-gene distances per transition, showing a spike near the TSS and a flat distal plateau">
+      <figcaption>
+        <strong>Figure 19.</strong> Distance from each opening peak to the nearest
+        gene TSS, per transition. The spike of promoter (within 2 kb) and proximal
+        (2 to 50 kb) links at the left is the trustworthy regulatory signal: peaks
+        concentrated at gene start sites. The flat distal plateau out to 500 kb
+        largely reflects genomic gene density rather than specific long-range
+        regulation, and without per-cell correlation those distal links cannot be
+        confidently assigned. The downstream analysis therefore restricts to
+        promoter and proximal links. The three panels also shrink across the
+        trajectory, echoing the chromatin remodeling magnitude from Figure 16.
+      </figcaption>
+    </figure>
+
+    <h3>Linked genes recover their expected modules</h3>
+
+    <p>
+      When the linked genes are grouped by their hdWGCNA module, each transition
+      connects most strongly to the module that matches its biology: the activation
+      transition links to the yellow class-switching module, the specification
+      transition to the proliferation and memory modules, and terminal differentiation
+      to the interferon-response module.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/43_linked_genes_per_module.png"
+           alt="Bar chart of linked module-member genes per transition, grouped by hdWGCNA module">
+      <figcaption>
+        <strong>Figure 20.</strong> Module-member genes linked to transition-opening
+        peaks, grouped by hdWGCNA module. The number of links scales with the
+        magnitude of chromatin remodeling at each transition (largest at MBC to prePB),
+        and the largest co-expression module (turquoise, proliferation) accumulates the
+        most links, as expected from its size.
+      </figcaption>
+    </figure>
+
+    <h3>Triple-evidence regulatory links</h3>
+
+    <p>
+      The strongest statements the data can make are links supported by all three
+      layers at once: a peak that <em>opens</em> at a transition (chromatin
+      accessibility), <em>contains a motif</em> for a transcription factor active in
+      that transition (TF binding), and sits near a gene that is an <em>hdWGCNA hub</em>
+      in the matching co-expression module (RNA). Restricting further to promoter and
+      proximal distances (excluding the unreliable distal plateau) yields a small set
+      of high-confidence regulatory hypotheses.
+    </p>
+
+    <figure class="case-figure">
+      <img src="../images/case-study/44_concordant_links_summary.png"
+           alt="Bar chart of high-confidence concordant regulatory links per transition, split by distance tier">
+      <figcaption>
+        <strong>Figure 21.</strong> High-confidence concordant regulatory links per
+        transition, where chromatin opening, TF motif, RNA module membership, and
+        promoter/proximal distance all agree. Solid bars are promoter links, lighter
+        bars proximal. The count decreases across the trajectory, consistent with the
+        chromatin landscape being established early and refined rather than rewritten
+        at later stages.
+      </figcaption>
+    </figure>
+
+    <p>
+      The activation transition produces the clearest result. Thirteen yellow-module
+      genes are linked to AP-1-motif peaks opening near their promoters, and the list
+      reads as a textbook B-cell activation program: <em>CD40</em> (the central B-cell
+      activation receptor), <em>PAX5</em> (the master regulator of B-cell identity),
+      <em>SPIB</em> and <em>BATF3</em> (transcription factors of the plasma cell
+      program), alongside <em>TNF</em>, <em>CCR7</em>, <em>LTA</em>, <em>CCL17</em>,
+      and <em>CCL22</em> (cytokines and homing receptors of the activated B cell).
+      BATF3 is a particularly elegant case: it is itself an AP-1 family transcription
+      factor, so an AP-1-motif peak opening near its own locus describes a
+      self-reinforcing, feed-forward activation circuit.
+    </p>
+
+    <div class="case-key-fact">
+      At activation entry, thirteen high-confidence links converge on the canonical
+      B-cell activation program (CD40, PAX5, SPIB, BATF3, TNF, CCR7). The appearance
+      of BATF3 as both an AP-1 regulator and an AP-1 target suggests a feed-forward
+      activation circuit, recovered here from the convergence of chromatin, motif,
+      and co-expression evidence.
+    </div>
 
     <h3>What the chromatin layer adds, and what comes next</h3>
 
@@ -1137,27 +1246,25 @@
       The chromatin analysis adds a directional, mechanistic dimension to the RNA
       findings. Where the RNA modules identified <em>which genes move together</em>,
       the motif enrichment identifies <em>which transcription factors plausibly drive
-      them</em>, and the differential accessibility shows <em>when</em> in the
-      trajectory the regulatory landscape is established. The integration converts a
-      set of co-expression correlations into testable hypotheses about regulation:
-      that AP-1 factors open the activation program, that POU2F2 and XBP1 specify the
-      secretory plasmablast, and that IRF / STAT activity accompanies terminal
-      differentiation.
+      them</em>, the differential accessibility shows <em>when</em> in the trajectory
+      the regulatory landscape is established, and the peak-to-gene linkage proposes
+      <em>which specific targets</em> each program acts on. Together these convert a
+      set of co-expression correlations into testable regulatory hypotheses.
     </p>
 
     <p>
-      The work is bounded by its data. The ATAC dataset provides one sample per
-      stage, so biological replication at the chromatin level is not available, and
-      the fragment-level corruption described above precludes per-cell motif activity
-      scoring (which would otherwise sharpen the per-cell regulatory inference). The
-      natural next step, planned for the following phase, is TF-target inference with
-      SCENIC on the RNA data, which would formally distinguish regulators from their
-      targets within each module and allow the construction of a directed regulatory
-      network spanning transcription factors, protein-coding targets, and the lncRNA
-      layer together.
+      The work is bounded by its data. The ATAC dataset provides one sample per stage,
+      so biological replication at the chromatin level is not available, and the
+      fragment-level corruption described above precludes per-cell motif activity
+      scoring. The peak-to-gene linkage is proximity-based, so the links are candidate
+      relationships rather than demonstrated regulation. The natural next step, planned
+      for the following phase, is TF-target inference with SCENIC on the RNA data,
+      which would formally distinguish regulators from their targets within each module
+      and allow the construction of a directed regulatory network spanning
+      transcription factors, protein-coding targets, and the lncRNA layer together.
     </p>
   </section>
-  
+
   <!-- SECTION 5, REPRODUCIBILITY -->
   <section class="case-section">
     <p class="section-label" style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: var(--accent); font-weight: 500;">The code</p>
